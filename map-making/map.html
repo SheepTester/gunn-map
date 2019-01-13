@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>rectanclunks on map</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="put rectangles on map for three.js to three.js ify yay"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+      body {
+        font-family: monospace;
+      }
+      img {
+        transform: translate(340px, -480px) rotate(116.5deg);
+      }
+      div {
+        border: 1px solid rgba(255, 0, 0, 0.5);
+        background-color: rgba(255, 0, 0, 0.1);
+        position: absolute;
+        width: 0;
+        height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+      }
+      div > span {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="./gunn academia.png" alt="gunn campus but without the fields" draggable="false">
+    <script>
+const pointers = {};
+document.addEventListener('pointerdown', e => {
+  if (pointers[e.pointerId]) return;
+  const rect = document.createElement('div');
+  rect.style.left = e.pageX + 'px';
+  rect.style.top = e.pageY + 'px';
+  document.body.appendChild(rect);
+  pointers[e.pointerId] = {
+    beginX: Math.round(e.pageX), beginY: Math.round(e.pageY),
+    rect: rect
+  };
+});
+function toRect(pointer, ev) {
+  const minX = Math.min(Math.round(ev.pageX), pointer.beginX);
+  const minY = Math.min(Math.round(ev.pageY), pointer.beginY);
+  const width = Math.max(Math.round(ev.pageX), pointer.beginX) - minX;
+  const height = Math.max(Math.round(ev.pageY), pointer.beginY) - minY;
+  pointer.rect.style.left = minX + 'px';
+  pointer.rect.style.top = minY + 'px';
+  pointer.rect.style.width = width + 'px';
+  pointer.rect.style.height = height + 'px';
+  return {x: minX, y: minY, width, height};
+}
+document.addEventListener('pointermove', e => {
+  if (pointers[e.pointerId]) {
+    toRect(pointers[e.pointerId], e);
+  }
+});
+document.addEventListener('pointerup', e => {
+  if (pointers[e.pointerId]) {
+    const {x, y, width, height} = toRect(pointers[e.pointerId], e);
+    if (width < 5 && height < 5) {
+      document.body.removeChild(pointers[e.pointerId].rect);
+    } else {
+      pointers[e.pointerId].rect.style.transform = 'rotate(0deg)';
+      console.log(`${x} ${y} ${width} ${height} 0`);
+    }
+    delete pointers[e.pointerId];
+  }
+});
+fetch('./rectancles.txt').then(r => r.text()).then(text => {
+  const fragment = document.createDocumentFragment();
+  text.split(/\r?\n/).filter(r => r && r[0] !== '#').forEach(rect => {
+    const [x, y, width, height, rotation, ...label] = rect.split(' ');
+    const elem = document.createElement('div');
+    elem.style.left = x + 'px';
+    elem.style.top = y + 'px';
+    elem.style.width = width + 'px';
+    elem.style.height = height + 'px';
+    elem.style.transform = `rotate(${rotation}deg)`;
+    elem.innerHTML = `<span>${label.join(' ')}</span>`;
+    fragment.appendChild(elem);
+  });
+  document.body.appendChild(fragment);
+});
+    </script>
+  </body>
+</html>

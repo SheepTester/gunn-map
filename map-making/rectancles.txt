@@ -1,0 +1,46 @@
+# old campus
+
+68 21 223 144 0 J building
+635 113 188 143 0 L building
+901 131 71 178 0 M building
+428 56 72 91 0 K building K3-K5
+
+## long buildings
+221 530 71 142 0 C building
+138 375 71 142 0 F building
+221 222 71 142 0 G building
+348 113 71 142 0 K building K1-K2
+513 113 71 142 0 K building K6-K13
+347 617 71 142 0 Admin Office
+493 618 71 142 0 Food Office
+
+## short buildings
+289 410 72 70 0 E building
+428 220 72 70 0 K building K14-K15
+
+## library
+29 604 156 68 0
+103 545 46 57 0
+22 653 81 71 0 Library
+31 673 88 69 0
+
+# village
+
+1377 927 59 263 0
+1458 916 60 294 0 Village
+1557 940 61 287 0
+
+# new campus
+
+# H building
+136 253 48 81 0 H building
+76 215 50 43 0
+35 224 49 80 0
+43 306 41 51 0
+
+# N building
+1210 236 50 118 0
+1026 39 51 167 0
+1143 -25 48 272 -38 N building
+1141 208 56 122 0
+1076 208 63 59 0

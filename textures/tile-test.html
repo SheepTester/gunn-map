@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>tile tester</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="just in case"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+      body {
+        image-rendering: pixelated;
+        background-size: 128px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+document.body.style.backgroundImage = `url(${window.location.search.slice(1) || './n-building.png'})`;
+    </script>
+  </body>
+</html>
