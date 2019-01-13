@@ -1,4 +1,4 @@
-# old campus
+# old campus [old_buildings]
 
 68 21 223 144 0 J building
 635 113 188 143 0 L building
@@ -24,13 +24,13 @@
 22 653 81 71 0 Library
 31 673 88 69 0
 
-# village
+# village [portables]
 
 1377 927 59 263 0
 1458 916 60 294 0 Village
 1557 940 61 287 0
 
-# new campus
+# new campus [n_building]
 
 # H building
 136 253 48 81 0 H building
