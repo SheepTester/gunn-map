@@ -8,6 +8,8 @@
  * 6. MOVEMENT
  */
 
+const searchParams = new URLSearchParams(new URL(window.location).search);
+
 // 1. CONSTANTS
 const CLASSROOM_HEIGHT = 10;
 const PLAYER_HEIGHT = 5;
@@ -139,6 +141,18 @@ fetch('./map-making/ground.json').then(r => r.json()).then(paths => {
   });
 });
 
+if (searchParams.has('showMap')) {
+  const floor = flatRect(0, 0, 1346, 824, 11);
+  floor.geometry.addAttribute('uv', new THREE.BufferAttribute(new Float32Array([
+    0, 1, 0, 0, 1, 0, 1, 1
+  ]), 2));
+  floor.side = THREE.DoubleSide;
+  const floorTexture = new THREE.TextureLoader().load('./map-making/rotated gunn.png');
+  floorTexture.magFilter = THREE.NearestFilter;
+  floorTexture.minFilter = THREE.NearestFilter;
+  scene.add(addTexture(floor, floorTexture));
+}
+
 // 4. USER INPUT
 document.addEventListener('click', e => {
   document.body.requestPointerLock();
@@ -185,15 +199,15 @@ function abstractedPlayerCollision(xCorner, zCorner, direction) {
 function collideAxis(velocity, isX) {
   if (velocity !== 0) {
     const sign = Math.sign(velocity);
-    const leftIntersection = abstractedPlayerCollision(isX ? sign : -1,
-      isX ? -1 : sign, new THREE.Vector3(isX ? velocity : 0, 0, isX ? 0 : velocity));
-    const rightIntersection = abstractedPlayerCollision(isX ? sign : 1,
-      isX ? 1 : sign, new THREE.Vector3(isX ? velocity : 0, 0, isX ? 0 : velocity));
+    const leftIntersection = abstractedPlayerCollision(isX ? 0 : -1,
+      isX ? -1 : 0, new THREE.Vector3(isX ? velocity : 0, 0, isX ? 0 : velocity));
+    const rightIntersection = abstractedPlayerCollision(isX ? 0 : 1,
+      isX ? 1 : 0, new THREE.Vector3(isX ? velocity : 0, 0, isX ? 0 : velocity));
     const intersection = leftIntersection && rightIntersection
       ? (leftIntersection.distance < rightIntersection.distance
         ? leftIntersection : rightIntersection) : leftIntersection
           || rightIntersection;
-    if (intersection && intersection.distance <= Math.abs(velocity)) {
+    if (intersection && intersection.distance <= Math.abs(velocity) + PLAYER_RADIUS) {
       const axisName = isX ? 'x' : 'z';
       return intersection.point[axisName] - camera.position[axisName] - sign * PLAYER_RADIUS;
     }
