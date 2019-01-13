@@ -28,22 +28,52 @@
       div > span {
         background-color: red;
       }
+      svg {
+        overflow: visible;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      path {
+        stroke: rgba(255, 0, 0, 0.5);
+        fill: rgba(255, 0, 0, 0.1);
+      }
     </style>
   </head>
   <body>
     <img src="./gunn academia.png" alt="gunn campus but without the fields" draggable="false">
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
+
     <script>
+// // IF THE POINTS ARE BACKWARDS, REVERSE:
+// r = []
+// '42 356 86 356 86 260 127 260 127 215 76 215 76 223 34 223 34 305 42 305'.replace(/\d+ \d+/g, m => r.push(m))
+// r.reverse().join(' ')
+
+const svgNS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('svg');
 const pointers = {};
+let tool = 'P';
 document.addEventListener('pointerdown', e => {
   if (pointers[e.pointerId]) return;
-  const rect = document.createElement('div');
-  rect.style.left = e.pageX + 'px';
-  rect.style.top = e.pageY + 'px';
-  document.body.appendChild(rect);
-  pointers[e.pointerId] = {
-    beginX: Math.round(e.pageX), beginY: Math.round(e.pageY),
-    rect: rect
-  };
+  if (tool === 'R') {
+    const rect = document.createElement('div');
+    rect.style.left = e.pageX + 'px';
+    rect.style.top = e.pageY + 'px';
+    document.body.appendChild(rect);
+    pointers[e.pointerId] = {
+      beginX: Math.round(e.pageX), beginY: Math.round(e.pageY),
+      rect: rect, type: tool
+    };
+  } else if (tool === 'P'){
+    const path = document.createElementNS(svgNS, 'path');
+    svg.appendChild(path);
+    pointers[e.pointerId] = {
+      lastX: Math.round(e.pageX), lastY: Math.round(e.pageY),
+      points: [[Math.round(e.pageX), Math.round(e.pageY)]],
+      path: path, type: tool
+    };
+  }
 });
 function toRect(pointer, ev) {
   const minX = Math.min(Math.round(ev.pageX), pointer.beginX);
@@ -56,35 +86,81 @@ function toRect(pointer, ev) {
   pointer.rect.style.height = height + 'px';
   return {x: minX, y: minY, width, height};
 }
+function snapToPoint(pointer, ev) {
+  let x = Math.round(ev.pageX), y = Math.round(ev.pageY);
+  if (ev.shiftKey) {
+    if (Math.abs(pointer.lastX - x) < Math.abs(pointer.lastY - y)) {
+      x = pointer.lastX;
+    } else {
+      y = pointer.lastY;
+    }
+  }
+  pointer.path.setAttributeNS(null, 'd', `M${[...pointer.points, [x, y]].map(points => points.join(' ')).join('L')}z`);
+  return [x, y];
+}
 document.addEventListener('pointermove', e => {
-  if (pointers[e.pointerId]) {
-    toRect(pointers[e.pointerId], e);
+  const pointer = pointers[e.pointerId];
+  if (pointer) {
+    if (pointer.type === 'R') {
+      toRect(pointer, e);
+    } else if (pointer.type === 'P') {
+      snapToPoint(pointer, e);
+    }
   }
 });
 document.addEventListener('pointerup', e => {
-  if (pointers[e.pointerId]) {
-    const {x, y, width, height} = toRect(pointers[e.pointerId], e);
-    if (width < 5 && height < 5) {
-      document.body.removeChild(pointers[e.pointerId].rect);
-    } else {
-      pointers[e.pointerId].rect.style.transform = 'rotate(0deg)';
-      console.log(`${x} ${y} ${width} ${height} 0`);
+  const pointer = pointers[e.pointerId];
+  if (pointer) {
+    if (pointer.type === 'R') {
+      const {x, y, width, height} = toRect(pointer, e);
+      if (width < 5 && height < 5) {
+        document.body.removeChild(pointer.rect);
+      } else {
+        pointer.rect.style.transform = 'rotate(0deg)';
+        console.log(`R ${x} ${y} ${width} ${height} 0`);
+      }
+      delete pointers[e.pointerId];
+    } else if (pointer.type === 'P') {
+      if (Math.abs(pointer.lastX - e.pageX) < 5 && Math.abs(pointer.lastY - e.pageY) < 5) {
+        if (pointer.points.length > 1) {
+          pointer.path.setAttributeNS(null, 'd', `M${pointer.points.map(points => points.join(' ')).join('L')}z`);
+          console.log('P ' + pointer.points.map(points => points.join(' ')).join(' '));
+        }
+        else svg.removeChild(pointer.path);
+        delete pointers[e.pointerId];
+      } else {
+        const lastPoint = snapToPoint(pointer, e);
+        pointer.lastX = lastPoint[0];
+        pointer.lastY = lastPoint[1];
+        pointer.points.push(lastPoint);
+      }
     }
-    delete pointers[e.pointerId];
   }
 });
-fetch('./rectancles.txt').then(r => r.text()).then(text => {
+fetch(window.location.search.slice(1) || './rectancles.txt').then(r => r.text()).then(text => {
   const fragment = document.createDocumentFragment();
   text.split(/\r?\n/).filter(r => r && r[0] !== '#').forEach(rect => {
-    const [x, y, width, height, rotation, ...label] = rect.split(' ');
-    const elem = document.createElement('div');
-    elem.style.left = x + 'px';
-    elem.style.top = y + 'px';
-    elem.style.width = width + 'px';
-    elem.style.height = height + 'px';
-    elem.style.transform = `rotate(${rotation}deg)`;
-    elem.innerHTML = `<span>${label.join(' ')}</span>`;
-    fragment.appendChild(elem);
+    const [type, ...params] = rect.split(' ');
+    if (type === 'R') {
+      const [x, y, width, height, rotation, ...label] = params;
+      const elem = document.createElement('div');
+      elem.style.left = x + 'px';
+      elem.style.top = y + 'px';
+      elem.style.width = width + 'px';
+      elem.style.height = height + 'px';
+      elem.style.transform = `rotate(${rotation}deg)`;
+      elem.innerHTML = `<span>${label.join(' ')}</span>`;
+      fragment.appendChild(elem);
+    } else if (type === 'P') {
+      const path = document.createElementNS(svgNS, 'path');
+      let pathStr = 'M';
+      for (let i = 0; i < params.length; i += 2) {
+        if (i !== 0) pathStr += 'L';
+        pathStr += params[i] + ' ' + params[i + 1];
+      }
+      path.setAttributeNS(null, 'd', pathStr + 'z');
+      svg.appendChild(path);
+    }
   });
   document.body.appendChild(fragment);
 });

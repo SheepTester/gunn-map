@@ -37,11 +37,11 @@ window.addEventListener('resize', e => {
 });
 
 // 3. MAP GENERATION
-function tileTexture(url) {
+function tileTexture(url, repeat = TILE_REPEAT) {
   const texture = new THREE.TextureLoader().load(url);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(TILE_REPEAT, TILE_REPEAT);
+  texture.repeat.set(repeat, repeat);
   texture.magFilter = THREE.NearestFilter;
   texture.minFilter = THREE.NearestFilter;
   return texture;
