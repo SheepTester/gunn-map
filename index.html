@@ -25,12 +25,24 @@
     <div class="centre-dot"></div>
     <script src="./three.min.js"></script>
     <script>
+/**
+ * === TABLE OF CONTENTS ===
+ * 1. CONSTANTS
+ * 2. RENDERING SETUP
+ * 3. MAP GENERATION
+ * 4. USER INPUT
+ * 5. PLAYER COLLISIONS
+ * 6. MOVEMENT
+ */
+
+// 1. CONSTANTS
 const CLASSROOM_HEIGHT = 10;
 const PLAYER_HEIGHT = 5;
 const TILE_REPEAT = 100;
 const TILE_SIZE = 16;
 const VISUAL_TILE_SIZE = 8;
 
+// 2. RENDERING SETUP
 // where things go
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xc9c9c9);
@@ -51,6 +63,7 @@ window.addEventListener('resize', e => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// 3. MAP GENERATION
 function tileTexture(url) {
   const texture = new THREE.TextureLoader().load(url);
   texture.wrapS = THREE.RepeatWrapping;
@@ -111,12 +124,16 @@ const textures = {
   old_buildings: tileTexture('./textures/old-buildings.png'),
   portables: tileTexture('./textures/portables.png')
 };
+const collideables = [];
 fetch('./map-making/walls.json').then(r => r.json()).then(paths => {
   paths.forEach(([texture, ...coords]) => {
-    scene.add(addTexture(planeBetween(...coords), textures[texture]));
+    const wall = addTexture(planeBetween(...coords), textures[texture]);
+    collideables.push(wall);
+    scene.add(wall);
   });
 });
 
+// 4. USER INPUT
 document.addEventListener('click', e => {
   document.body.requestPointerLock();
 });
@@ -150,15 +167,44 @@ document.addEventListener('keyup', e => {
   }
 });
 
+// 5. PLAYER COLLISIONS
 const raycaster = new THREE.Raycaster();
+function abstractedPlayerCollision(xCorner, zCorner, direction) {
+  const start = camera.position.clone().add(new THREE.Vector3(xCorner * PLAYER_RADIUS,
+    0, zCorner * PLAYER_RADIUS));
+  raycaster.set(start, direction);
+  const [intersection] = raycaster.intersectObjects(collideables);
+  return intersection || null;
+}
+function collideAxis(velocity, isX) {
+  if (velocity !== 0) {
+    const sign = Math.sign(velocity);
+    const leftIntersection = abstractedPlayerCollision(isX ? sign : -1,
+      isX ? -1 : sign, new THREE.Vector3(isX ? velocity : 0, 0, isX ? 0 : velocity));
+    const rightIntersection = abstractedPlayerCollision(isX ? sign : 1,
+      isX ? 1 : sign, new THREE.Vector3(isX ? velocity : 0, 0, isX ? 0 : velocity));
+    const intersection = leftIntersection && rightIntersection
+      ? (leftIntersection.distance < rightIntersection.distance
+        ? leftIntersection : rightIntersection) : leftIntersection
+          || rightIntersection;
+    if (intersection && intersection.distance <= Math.abs(velocity)) {
+      const axisName = isX ? 'x' : 'z';
+      return intersection.point[axisName] - camera.position[axisName] - sign * PLAYER_RADIUS;
+    }
+  }
+  return velocity;
+}
 
+const PLAYER_RADIUS = 1;
 const PLAYER_SPEED = 0.2;
 let speedBoost = 1;
 function animate() {
   requestAnimationFrame(animate);
+
+  // 6. MOVEMENT
   const dx = Math.sin(camera.rotation.y);
   const dz = Math.cos(camera.rotation.y);
-  speedBoost += ((keys.shift ? 20 : 1) - speedBoost) / 10;
+  speedBoost += ((keys.shift ? 20 : 1) - speedBoost) / 50;
   let xv = 0, zv = 0;
   if (keys.up) {
     xv -= dx * PLAYER_SPEED * speedBoost;
@@ -176,19 +222,9 @@ function animate() {
     xv += dz * PLAYER_SPEED * speedBoost;
     zv -= dx * PLAYER_SPEED * speedBoost;
   }
-  camera.position.x += xv; // TEMP - add collisions
-  camera.position.z += zv;
-  // raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
-  // const [intersection] = raycaster.intersectObject(plane);
-  // if (intersection) {
-  //   const {point} = intersection;
-  //   lineGeo.vertices[0] = point;
-  //   lineGeo.vertices[1] = new THREE.Vector3(point.x, point.y + 1, point.z);
-  //   lineGeo.verticesNeedUpdate = true;
-  //   line.visible = true;
-  // } else {
-  //   line.visible = false;
-  // }
+  camera.position.x += collideAxis(xv, true);
+  camera.position.z += collideAxis(zv, false);
+
   renderer.render(scene, camera);
 }
 animate();
