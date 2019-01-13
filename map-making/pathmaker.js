@@ -8,7 +8,7 @@ const path = require('path');
   const paths = [];
   let currentMode = 'n_building';
   (await read(path.resolve(__dirname, './rectancles.txt')))
-    .replace(/\[([a-z_]+)\]|^([RP])((?: \d+)+)/gm, (_, mode, type, params) => {
+    .replace(/\[([a-z_]+)\]|^([RP])((?: [-\d]+)+)/gm, (_, mode, type, params) => {
       if (mode) {
         currentMode = mode;
         return;
