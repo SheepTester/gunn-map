@@ -23,7 +23,9 @@ scene.background = new THREE.Color(0xc9c9c9);
 // the Eye(tm) - FOV, aspect ratio, near plane, far plane
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.rotation.order = 'YXZ';
-camera.position.y = PLAYER_HEIGHT;
+camera.position.set(141, PLAYER_HEIGHT, 169);
+camera.rotation.set(-0.08, -3.24, 0);
+// camera.position.y = PLAYER_HEIGHT;
 
 // he who makes the pixels
 const renderer = new THREE.WebGLRenderer();
@@ -48,61 +50,92 @@ function tileTexture(url, repeat = TILE_REPEAT) {
 }
 
 const textureSize = TILE_REPEAT * TILE_SIZE;
-const classRoomHeightFraction = CLASSROOM_HEIGHT * VISUAL_TILE_SIZE / textureSize;
 
-const floor = new THREE.BufferGeometry();
-floor.addAttribute('position', new THREE.BufferAttribute(new Float32Array([
-  -textureSize / VISUAL_TILE_SIZE / 2, 0, -textureSize / VISUAL_TILE_SIZE / 2,
-  -textureSize / VISUAL_TILE_SIZE / 2, 0, textureSize / VISUAL_TILE_SIZE / 2,
-  textureSize / VISUAL_TILE_SIZE / 2, 0, textureSize / VISUAL_TILE_SIZE / 2,
-  textureSize / VISUAL_TILE_SIZE / 2, 0, -textureSize / VISUAL_TILE_SIZE / 2
-]), 3));
-floor.addAttribute('uv', new THREE.BufferAttribute(new Float32Array([
-  0.0, 0.0,
-  0.0, 1.0,
-  1.0, 1.0,
-  1.0, 0.0
-]), 2));
-floor.setIndex(new THREE.BufferAttribute(new Uint16Array([
-  0, 1, 2, 0, 2, 3
-]), 1));
-scene.add(addTexture(floor, tileTexture('./textures/cement.png')));
-
-function planeBetween(x1, z1, x2, z2, raiseY = 0) {
+function makeWall(x1, z1, x2, z2, raiseY = 0, height = CLASSROOM_HEIGHT) {
   const geometry = new THREE.BufferGeometry();
   geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array([
     x1, raiseY, z1,
-    x1, raiseY + CLASSROOM_HEIGHT, z1,
-    x2, raiseY + CLASSROOM_HEIGHT, z2,
+    x1, raiseY + height, z1,
+    x2, raiseY + height, z2,
     x2, raiseY, z2
   ]), 3));
   const length = Math.hypot(x1 - x2, z1 - z2);
   geometry.addAttribute('uv', new THREE.BufferAttribute(new Float32Array([
     0.0, 0.0,
-    0.0, classRoomHeightFraction,
-    length * VISUAL_TILE_SIZE / textureSize, classRoomHeightFraction,
+    0.0, height * VISUAL_TILE_SIZE / textureSize,
+    length * VISUAL_TILE_SIZE / textureSize, height * VISUAL_TILE_SIZE / textureSize,
     length * VISUAL_TILE_SIZE / textureSize, 0.0
   ]), 2));
   geometry.setIndex(new THREE.BufferAttribute(new Uint16Array([
     0, 1, 2, 0, 2, 3
   ]), 1));
-  return geometry;
+  return {geometry};
 }
-function addTexture(geometry, texture) {
-  return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture}));
+function flatRect(x, z, width, height, raiseY = 0) {
+  const geometry = new THREE.BufferGeometry();
+  geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array([
+    x, raiseY, z,
+    x, raiseY, z + height,
+    x + width, raiseY, z + height,
+    x + width, raiseY, z
+  ]), 3));
+  geometry.addAttribute('uv', new THREE.BufferAttribute(new Float32Array([
+    0.0, 0.0,
+    0.0, height * VISUAL_TILE_SIZE / textureSize,
+    width * VISUAL_TILE_SIZE / textureSize, height * VISUAL_TILE_SIZE / textureSize,
+    width * VISUAL_TILE_SIZE / textureSize, 0.0
+  ]), 2));
+  geometry.setIndex(new THREE.BufferAttribute(new Uint16Array([
+    0, 1, 2, 0, 2, 3
+  ]), 1));
+  return {geometry};
+}
+function flatPath(points, raiseY = 0) {
+  const shape = new THREE.Shape();
+  shape.moveTo(...points[0]);
+  points.slice(1).forEach(([x, y]) => shape.lineTo(x, y));
+  const geometry = new THREE.ShapeBufferGeometry(shape);
+  const attribute = geometry.getAttribute('position');
+  const uv = new Float32Array(attribute.array.length / 3 * 2);
+  const x = Math.min(...points.map(pt => pt[0]));
+  const z = Math.min(...points.map(pt => pt[1]));
+  const width = Math.max(...points.map(pt => pt[0])) - x;
+  const height = Math.max(...points.map(pt => pt[1])) - z;
+  for (let i = 0, stop = attribute.array.length / 3; i < stop; i++) {
+    uv[i * 2] = (attribute.array[i * 3] - x) * VISUAL_TILE_SIZE / textureSize;
+    uv[i * 2 + 1] = (attribute.array[i * 3 + 1] - z) * VISUAL_TILE_SIZE / textureSize;
+    attribute.array[i * 3 + 2] = attribute.array[i * 3 + 1];
+    attribute.array[i * 3 + 1] = raiseY;
+  }
+  geometry.addAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  geometry.addAttribute('position', attribute);
+  return {geometry, side: THREE.BackSide};
+}
+
+function addTexture({geometry, side = THREE.FrontSide}, texture) {
+  return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture, side}));
 }
 
 const textures = {
   n_building: tileTexture('./textures/n-building.png'),
   old_buildings: tileTexture('./textures/old-buildings.png'),
-  portables: tileTexture('./textures/portables.png')
+  portables: tileTexture('./textures/portables.png'),
+  grass: tileTexture('./textures/grass.png'),
+  woodchips: tileTexture('./textures/woodchips.png'),
+  cement: tileTexture('./textures/cement.png'),
+  fence: tileTexture('./textures/fence.png')
 };
 const collideables = [];
 fetch('./map-making/walls.json').then(r => r.json()).then(paths => {
   paths.forEach(([texture, ...coords]) => {
-    const wall = addTexture(planeBetween(...coords), textures[texture]);
+    const wall = addTexture(makeWall(...coords), textures[texture]);
     collideables.push(wall);
     scene.add(wall);
+  });
+});
+fetch('./map-making/ground.json').then(r => r.json()).then(paths => {
+  paths.forEach(([texture, isPath, ...coords]) => {
+    scene.add(addTexture(isPath ? flatPath(...coords) : flatRect(...coords), textures[texture]));
   });
 });
 

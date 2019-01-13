@@ -45,15 +45,16 @@
     <svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
 
     <script>
-// // IF THE POINTS ARE BACKWARDS, REVERSE:
-// r = []
-// '42 356 86 356 86 260 127 260 127 215 76 215 76 223 34 223 34 305 42 305'.replace(/\d+ \d+/g, m => r.push(m))
-// r.reverse().join(' ')
+function flip(points) {
+  const r = [];
+  points.replace(/[-\d]+ [-\d]+/g, m => r.push(m));
+  return r.reverse().join(' ');
+}
 
 const svgNS = 'http://www.w3.org/2000/svg';
 const svg = document.getElementById('svg');
 const pointers = {};
-let tool = 'P';
+let tool = 'R';
 document.addEventListener('pointerdown', e => {
   if (pointers[e.pointerId]) return;
   if (tool === 'R') {
