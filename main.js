@@ -192,7 +192,7 @@ const raycaster = new THREE.Raycaster();
 function abstractedPlayerCollision(xCorner, zCorner, direction) {
   const start = camera.position.clone().add(new THREE.Vector3(xCorner * PLAYER_RADIUS,
     0, zCorner * PLAYER_RADIUS));
-  raycaster.set(start, direction);
+  raycaster.set(start, direction.normalize());
   const [intersection] = raycaster.intersectObjects(collideables);
   return intersection || null;
 }
