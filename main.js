@@ -125,7 +125,8 @@ const textures = {
   grass: tileTexture('./textures/grass.png'),
   woodchips: tileTexture('./textures/woodchips.png'),
   cement: tileTexture('./textures/cement.png'),
-  fence: tileTexture('./textures/fence.png')
+  fence: tileTexture('./textures/fence.png'),
+  dark_cement: tileTexture('./textures/dark-cement.png')
 };
 const collideables = [];
 fetch('./map-making/walls.json').then(r => r.json()).then(paths => {
