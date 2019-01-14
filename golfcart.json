@@ -1,0 +1,277 @@
+{
+	"metadata": {
+		"version": 4.5,
+		"type": "Object",
+		"generator": "Object3D.toJSON"
+	},
+	"geometries": [
+		{
+			"uuid": "1851403D-5CE6-475B-800D-FFE6372032A6",
+			"type": "BoxBufferGeometry",
+			"width": 1,
+			"height": 1,
+			"depth": 1,
+			"widthSegments": 1,
+			"heightSegments": 1,
+			"depthSegments": 1
+		},
+		{
+			"uuid": "BD35AD1F-42F2-44BA-8F5D-A862B06EF680",
+			"type": "BoxBufferGeometry",
+			"width": 1,
+			"height": 1,
+			"depth": 1,
+			"widthSegments": 1,
+			"heightSegments": 1,
+			"depthSegments": 1
+		},
+		{
+			"uuid": "25898D45-75C8-42BA-8053-4F3F43BD5B24",
+			"type": "CylinderBufferGeometry",
+			"radiusTop": 1,
+			"radiusBottom": 1,
+			"height": 1,
+			"radialSegments": 8,
+			"heightSegments": 1,
+			"openEnded": false
+		},
+		{
+			"uuid": "850D3BBE-6822-47FB-85F7-F1E62B5B368B",
+			"type": "BoxBufferGeometry",
+			"width": 1,
+			"height": 1,
+			"depth": 1,
+			"widthSegments": 1,
+			"heightSegments": 1,
+			"depthSegments": 1
+		},
+		{
+			"uuid": "B8A33E69-F8B1-449F-9010-7BBE4D638D86",
+			"type": "CylinderBufferGeometry",
+			"radiusTop": 1,
+			"radiusBottom": 1,
+			"height": 1,
+			"radialSegments": 8,
+			"heightSegments": 1,
+			"openEnded": false,
+			"thetaStart": 0,
+			"thetaLength": 6.283185
+		}],
+	"materials": [
+		{
+			"uuid": "DA0B49AD-9BC2-4D46-A3C0-F0D9991A23D2",
+			"type": "MeshStandardMaterial",
+			"color": 16777215,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 13421772,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true
+		},
+		{
+			"uuid": "35E624F9-F635-4D82-ACA2-376D875CEEAB",
+			"type": "MeshStandardMaterial",
+			"color": 16777215,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 5592405,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true
+		},
+		{
+			"uuid": "A00CB7C5-5A71-42F6-B97E-202FC125AE39",
+			"type": "MeshStandardMaterial",
+			"color": 16777215,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 1776411,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true
+		},
+		{
+			"uuid": "C3C1138C-362D-459C-9088-1D1885D58247",
+			"type": "MeshStandardMaterial",
+			"color": 16777215,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 14933710,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true
+		},
+		{
+			"uuid": "CC895CDE-6914-436D-B80C-5DCF980BEC6E",
+			"type": "MeshStandardMaterial",
+			"color": 16777215,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 3158064,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true
+		}],
+	"object": {
+		"uuid": "75853F59-F459-4925-80E5-ACBC9C676557",
+		"type": "Group",
+		"name": "golf cart",
+		"layers": 1,
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"children": [
+			{
+				"uuid": "A51F98D8-2841-479E-8ED9-0693FE2C2A98",
+				"type": "Mesh",
+				"name": "roof",
+				"layers": 1,
+				"matrix": [3,0,0,0,0,0.2,0,0,0,0,2,0,0,3.494445,0,1],
+				"geometry": "1851403D-5CE6-475B-800D-FFE6372032A6",
+				"material": "DA0B49AD-9BC2-4D46-A3C0-F0D9991A23D2"
+			},
+			{
+				"uuid": "8B3BD8CE-1182-405E-B9AC-97ED59273E1F",
+				"type": "Mesh",
+				"name": "bottom",
+				"layers": 1,
+				"matrix": [5,0,0,0,0,0.5,0,0,0,0,2,0,0,0.5,0,1],
+				"geometry": "1851403D-5CE6-475B-800D-FFE6372032A6",
+				"material": "DA0B49AD-9BC2-4D46-A3C0-F0D9991A23D2"
+			},
+			{
+				"uuid": "114D8792-64A0-4EA0-AB96-7B44C09AD184",
+				"type": "Mesh",
+				"name": "front",
+				"layers": 1,
+				"matrix": [0.75,1.299038,0,0,-0.433013,0.25,0,0,0,0,2,0,-2,1,0,1],
+				"geometry": "1851403D-5CE6-475B-800D-FFE6372032A6",
+				"material": "DA0B49AD-9BC2-4D46-A3C0-F0D9991A23D2"
+			},
+			{
+				"uuid": "D93150E4-E4BF-45A2-BD76-4D58BA4AF8A7",
+				"type": "Mesh",
+				"name": "back",
+				"layers": 1,
+				"matrix": [2.119602,0,0,0,0,1.018571,0,0,0,0,2,0,0.982009,1.00361,0,1],
+				"geometry": "1851403D-5CE6-475B-800D-FFE6372032A6",
+				"material": "DA0B49AD-9BC2-4D46-A3C0-F0D9991A23D2"
+			},
+			{
+				"uuid": "155E99CD-8140-4326-9CB1-436546906260",
+				"type": "Mesh",
+				"name": "bar left front",
+				"layers": 1,
+				"matrix": [0.193185,-0.051764,0,0,0.517638,1.931852,0,0,0,0,0.209785,0,-1.5,2.5,0.8,1],
+				"geometry": "BD35AD1F-42F2-44BA-8F5D-A862B06EF680",
+				"material": "35E624F9-F635-4D82-ACA2-376D875CEEAB"
+			},
+			{
+				"uuid": "271F3191-6A10-4DC4-BD3B-8EAAA641EBBD",
+				"type": "Mesh",
+				"name": "bar right front",
+				"layers": 1,
+				"matrix": [0.193185,-0.051764,0,0,0.517638,1.931852,0,0,0,0,0.209785,0,-1.5,2.5,-0.8,1],
+				"geometry": "BD35AD1F-42F2-44BA-8F5D-A862B06EF680",
+				"material": "35E624F9-F635-4D82-ACA2-376D875CEEAB"
+			},
+			{
+				"uuid": "30C561D4-8539-44E6-94EE-BB586199C50E",
+				"type": "Mesh",
+				"name": "bar left back",
+				"layers": 1,
+				"matrix": [0.2,0,0,0,0,2,0,0,0,0,0.209785,0,1,2.5,0.8,1],
+				"geometry": "BD35AD1F-42F2-44BA-8F5D-A862B06EF680",
+				"material": "35E624F9-F635-4D82-ACA2-376D875CEEAB"
+			},
+			{
+				"uuid": "C1976AB7-BBCC-49E4-BD28-900D30695771",
+				"type": "Mesh",
+				"name": "bar right back",
+				"layers": 1,
+				"matrix": [0.2,0,0,0,0,2,0,0,0,0,0.209785,0,1,2.5,-0.8,1],
+				"geometry": "BD35AD1F-42F2-44BA-8F5D-A862B06EF680",
+				"material": "35E624F9-F635-4D82-ACA2-376D875CEEAB"
+			},
+			{
+				"uuid": "E6CF78FD-42B0-471E-A74B-0930D98FFFC3",
+				"type": "Mesh",
+				"name": "wheel left front",
+				"layers": 1,
+				"matrix": [0.5,0,0,0,0,0,0.251046,0,0,-0.505324,0,0,-2,0.5,1,1],
+				"geometry": "25898D45-75C8-42BA-8053-4F3F43BD5B24",
+				"material": "A00CB7C5-5A71-42F6-B97E-202FC125AE39"
+			},
+			{
+				"uuid": "FB0D50E5-9ADB-4D0C-894A-27CC048286C2",
+				"type": "Mesh",
+				"name": "wheel right front",
+				"layers": 1,
+				"matrix": [0.5,0,0,0,0,0,0.251046,0,0,-0.505324,0,0,-2,0.5,-1,1],
+				"geometry": "25898D45-75C8-42BA-8053-4F3F43BD5B24",
+				"material": "A00CB7C5-5A71-42F6-B97E-202FC125AE39"
+			},
+			{
+				"uuid": "6887D047-CB2E-48E2-B0FE-4ABD5C5F8FF1",
+				"type": "Mesh",
+				"name": "wheel left back",
+				"layers": 1,
+				"matrix": [0.5,0,0,0,0,0,0.251046,0,0,-0.505324,0,0,1,0.5,1,1],
+				"geometry": "25898D45-75C8-42BA-8053-4F3F43BD5B24",
+				"material": "A00CB7C5-5A71-42F6-B97E-202FC125AE39"
+			},
+			{
+				"uuid": "49A43F32-0851-4C8F-B4FE-FDC745999DEB",
+				"type": "Mesh",
+				"name": "wheel right back",
+				"layers": 1,
+				"matrix": [0.5,0,0,0,0,0,0.251046,0,0,-0.505324,0,0,1,0.5,-1,1],
+				"geometry": "25898D45-75C8-42BA-8053-4F3F43BD5B24",
+				"material": "A00CB7C5-5A71-42F6-B97E-202FC125AE39"
+			},
+			{
+				"uuid": "C4A4F93D-8780-4439-AC38-91729B1FAD86",
+				"type": "Mesh",
+				"name": "cushion back",
+				"layers": 1,
+				"matrix": [0.7,0,0,0,0,0.2,0,0,0,0,1.7,0,1.6,1.5,0,1],
+				"geometry": "850D3BBE-6822-47FB-85F7-F1E62B5B368B",
+				"material": "C3C1138C-362D-459C-9088-1D1885D58247"
+			},
+			{
+				"uuid": "077054F0-3241-4EEF-97AF-D7B41C9158D5",
+				"type": "Mesh",
+				"name": "cushion front",
+				"layers": 1,
+				"matrix": [0.7,0,0,0,0,0.2,0,0,0,0,1.7,0,0.4,1.5,0,1],
+				"geometry": "850D3BBE-6822-47FB-85F7-F1E62B5B368B",
+				"material": "C3C1138C-362D-459C-9088-1D1885D58247"
+			},
+			{
+				"uuid": "EAB11994-4EC7-45E6-99B5-F9BFA68A480A",
+				"type": "Mesh",
+				"name": "cushion between",
+				"layers": 1,
+				"matrix": [0,0.7,0,0,-0.155408,0,0,0,0,0,1.7,0,1,2,0,1],
+				"geometry": "850D3BBE-6822-47FB-85F7-F1E62B5B368B",
+				"material": "C3C1138C-362D-459C-9088-1D1885D58247"
+			},
+			{
+				"uuid": "AF34C7F9-7F93-4857-8432-1FEC66D67288",
+				"type": "Mesh",
+				"name": "steering wheel",
+				"layers": 1,
+				"matrix": [0.282843,-0.282843,0,0,0.070711,0.070711,0,0,0,0,0.4,0,-1.1,2,0,1],
+				"geometry": "B8A33E69-F8B1-449F-9010-7BBE4D638D86",
+				"material": "CC895CDE-6914-436D-B80C-5DCF980BEC6E"
+			},
+			{
+				"uuid": "C8191E80-7D43-40B7-B2C7-EBEE42121478",
+				"type": "Mesh",
+				"name": "steering wheel bar",
+				"layers": 1,
+				"matrix": [0.141421,-0.141421,0,0,0.424264,0.424264,0,0,0,0,0.209785,0,-1.3,1.8,0,1],
+				"geometry": "BD35AD1F-42F2-44BA-8F5D-A862B06EF680",
+				"material": "35E624F9-F635-4D82-ACA2-376D875CEEAB"
+			}]
+	}
+}

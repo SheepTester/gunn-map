@@ -20,7 +20,7 @@ const VISUAL_TILE_SIZE = 8;
 // 2. RENDERING SETUP
 // where things go
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xc9c9c9);
+scene.background = new THREE.Color(0xdce0e1);
 
 // the Eye(tm) - FOV, aspect ratio, near plane, far plane
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -152,6 +152,14 @@ if (searchParams.has('showMap')) {
   floorTexture.minFilter = THREE.NearestFilter;
   scene.add(addTexture(floor, floorTexture));
 }
+
+let golfCart;
+new THREE.ObjectLoader().load('./golfcart.json', obj => {
+  obj.scale.multiplyScalar(2);
+  obj.position.set(210, 0, 250);
+  obj.rotation.y = -1.4;
+  scene.add(golfCart = obj);
+});
 
 // 4. USER INPUT
 document.addEventListener('click', e => {
