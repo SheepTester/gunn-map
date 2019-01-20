@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>J Building test</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A 3D first-person map of the J building maybe"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+      body { margin: 0; font-size: 0; background-color: #666;}
+      canvas { width: 100%; height: 100%; }
+      .centre-dot {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="centre-dot"></div>
+    <script src="./three.min.js"></script>
+    <script src="./test-j-building.js" charset="utf-8"></script>
+    <script type="text/javascript">
+loadImages({
+  old_buildings: image('./textures/old-buildings.png'),
+  cement: image('./textures/cement.png'),
+  dark_cement: image('./textures/dark-cement.png')
+}).then(images => {
+  scene.add(wall(images.old_buildings, 0, 0, 5, 5, 0, CLASSROOM_HEIGHT / 5, THREE.DoubleSide));
+  scene.add(wall(colour(0, 0.5), 0, 0, 5, 5, CLASSROOM_HEIGHT / 5, CLASSROOM_HEIGHT * 3 / 5, THREE.DoubleSide));
+  scene.add(wall(images.old_buildings, 0, 0, 5, 5, CLASSROOM_HEIGHT * 4 / 5, CLASSROOM_HEIGHT / 5, THREE.DoubleSide));
+  scene.add(flatRect(images.cement, 0, 0, 10, 10));
+});
+    </script>
+  </body>
+</html>

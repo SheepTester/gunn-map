@@ -1,0 +1,22 @@
+MAIN test
+
+DEF test
+STEPX stepper ~ ~
+window
+wall
+doors
+wall
+window
+window
+wall
+doors
+wall
+window
+END test
+
+DEF window stepper
+# WALL x1 z1 x2 z2 material y? height?
+= oldX stepper
+INC stepper 50
+WALL oldX ~ stepper ~ PLANKS ~ *0.5 # multiplies by default
+PLANE oldX ~ stepper ~ PLANKS ~ *0.5 # not collideable
