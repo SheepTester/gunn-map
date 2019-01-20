@@ -1,8 +1,10 @@
-const CLASSROOM_HEIGHT = 10;
-const PLAYER_HEIGHT = 5;
-const PIXEL_SIZE = 0.1;
-const PLAYER_RADIUS = 1;
-const PLAYER_SPEED = 0.2;
+// 12 INCHES = 12 UNITS = 16 PX
+
+const CLASSROOM_HEIGHT = 8 * 12;
+const PLAYER_HEIGHT = 5 * 12 + 10;
+const PIXEL_SIZE = 12 / 16;
+const PLAYER_RADIUS = 0.5 * 12;
+const PLAYER_SPEED = 2;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xdce0e1);
