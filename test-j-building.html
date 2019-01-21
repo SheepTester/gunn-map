@@ -30,19 +30,48 @@ loadImages({
   old_buildings: image('./textures/old-buildings.png'),
   cement: image('./textures/cement.png'),
   dark_cement: image('./textures/dark-cement.png'),
-  pillar: image('./textures/pillar-maybe.png')
+  pillar: image('./textures/pillar-maybe.png'),
+  paronable: image('./textures/paronable-window.png', true),
+  door: image('./textures/j-building-door.png', true)
 }).then(images => {
-  function pillar(x, z) {
-    scene.add(wall(images.pillar, x - PILLAR_RADIUS, z - PILLAR_RADIUS, x + PILLAR_RADIUS, z - PILLAR_RADIUS));
-    scene.add(wall(images.pillar, x + PILLAR_RADIUS, z - PILLAR_RADIUS, x + PILLAR_RADIUS, z + PILLAR_RADIUS));
-    scene.add(wall(images.pillar, x + PILLAR_RADIUS, z + PILLAR_RADIUS, x - PILLAR_RADIUS, z + PILLAR_RADIUS));
-    scene.add(wall(images.pillar, x - PILLAR_RADIUS, z + PILLAR_RADIUS, x - PILLAR_RADIUS, z - PILLAR_RADIUS));
+  function isCollideable(object) {
+    collideables.push(object);
+    scene.add(object);
   }
-  // scene.add(wall(images.old_buildings, 0, 0, 5, 5, 0, CLASSROOM_HEIGHT / 5, THREE.DoubleSide));
-  // scene.add(wall(colour(0, 0.5), 0, 0, 5, 5, CLASSROOM_HEIGHT / 5, CLASSROOM_HEIGHT * 3 / 5, THREE.DoubleSide));
-  // scene.add(wall(images.old_buildings, 0, 0, 5, 5, CLASSROOM_HEIGHT * 4 / 5, CLASSROOM_HEIGHT / 5, THREE.DoubleSide));
+  function pillar(x, z) {
+    [
+      makeWall(images.pillar, x - PILLAR_RADIUS, z - PILLAR_RADIUS, x + PILLAR_RADIUS, z - PILLAR_RADIUS),
+      makeWall(images.pillar, x + PILLAR_RADIUS, z - PILLAR_RADIUS, x + PILLAR_RADIUS, z + PILLAR_RADIUS),
+      makeWall(images.pillar, x + PILLAR_RADIUS, z + PILLAR_RADIUS, x - PILLAR_RADIUS, z + PILLAR_RADIUS),
+      makeWall(images.pillar, x - PILLAR_RADIUS, z + PILLAR_RADIUS, x - PILLAR_RADIUS, z - PILLAR_RADIUS)
+    ].forEach(isCollideable);
+  }
+  // scene.add(makeWall(images.old_buildings, 0, 0, 5, 5, 0, CLASSROOM_HEIGHT / 5, THREE.DoubleSide));
+  // scene.add(makeWall(colour(0, 0.5), 0, 0, 5, 5, CLASSROOM_HEIGHT / 5, CLASSROOM_HEIGHT * 3 / 5, THREE.DoubleSide));
+  // scene.add(makeWall(images.old_buildings, 0, 0, 5, 5, CLASSROOM_HEIGHT * 4 / 5, CLASSROOM_HEIGHT / 5, THREE.DoubleSide));
   // scene.add(flatRect(images.cement, 0, 0, 10, 10));
-  pillar(-5, -5);
+  const SECTION_LENGTH = 12 * 12; // 12ft
+  const PARONABLE_WIDTH = 4 * 12; // 4ft
+  const DOOR_WIDTH = 3 * 12; // 3ft
+  const HALLWAY_WIDTH = 6 * 12; // 6ft
+  const parts = ['windows', 'wall', 'doors', 'wall', 'windows', 'windows', 'wall', 'doors'];
+  parts.forEach((part, i) => {
+    pillar(i * SECTION_LENGTH, 0);
+    pillar(i * SECTION_LENGTH, HALLWAY_WIDTH);
+    if (part === 'wall') {
+      isCollideable(makeWall(images.old_buildings, (i + 1) * SECTION_LENGTH - PILLAR_RADIUS, 0, i * SECTION_LENGTH + PILLAR_RADIUS, 0));
+    } else if (part === 'windows') {
+      isCollideable(makeWall(images.old_buildings, (i + 1) * SECTION_LENGTH - PILLAR_RADIUS - PARONABLE_WIDTH, 0, i * SECTION_LENGTH + PILLAR_RADIUS + PARONABLE_WIDTH, 0));
+      isCollideable(makeWall(images.paronable, i * SECTION_LENGTH + PILLAR_RADIUS + PARONABLE_WIDTH, 0, i * SECTION_LENGTH + PILLAR_RADIUS, 0));
+      isCollideable(makeWall(images.paronable, (i + 1) * SECTION_LENGTH - PILLAR_RADIUS, 0, (i + 1) * SECTION_LENGTH - PILLAR_RADIUS - PARONABLE_WIDTH, 0));
+    } else if (part === 'doors') {
+      isCollideable(makeWall(images.old_buildings, (i + 1) * SECTION_LENGTH - PILLAR_RADIUS - DOOR_WIDTH, 0, i * SECTION_LENGTH + PILLAR_RADIUS + DOOR_WIDTH, 0));
+      scene.add(makeWall(images.door, i * SECTION_LENGTH + PILLAR_RADIUS + DOOR_WIDTH, 0, i * SECTION_LENGTH + PILLAR_RADIUS, 0));
+      scene.add(makeWall(images.door, (i + 1) * SECTION_LENGTH - PILLAR_RADIUS, 0, (i + 1) * SECTION_LENGTH - PILLAR_RADIUS - DOOR_WIDTH, 0));
+    }
+  });
+  scene.add(flatRect(images.cement, -PILLAR_RADIUS, 0, parts.length * SECTION_LENGTH + PILLAR_RADIUS * 2, HALLWAY_WIDTH + PILLAR_RADIUS));
+  scene.add(flatRect(images.dark_cement, -PILLAR_RADIUS, 0, parts.length * SECTION_LENGTH + PILLAR_RADIUS * 2, HALLWAY_WIDTH + PILLAR_RADIUS, CLASSROOM_HEIGHT, THREE.BackSide));
 });
     </script>
   </body>

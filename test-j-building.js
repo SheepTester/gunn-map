@@ -1,9 +1,9 @@
-// 12 INCHES = 12 UNITS = 16 PX
+// IN = UN = PX
 
-const CLASSROOM_HEIGHT = 8 * 12;
-const PLAYER_HEIGHT = 5 * 12 + 10;
-const PIXEL_SIZE = 12 / 16;
-const PLAYER_RADIUS = 0.5 * 12;
+const CLASSROOM_HEIGHT = 8 * 12; // 8ft
+const PLAYER_HEIGHT = 5 * 12 + 8.5 - 5; // 5'8.5" - 5" for eyes
+const PIXEL_SIZE = 1;
+const PLAYER_RADIUS = 0.5 * 12; // 0.5ft
 const PLAYER_SPEED = 2;
 
 const scene = new THREE.Scene();
@@ -11,8 +11,8 @@ scene.background = new THREE.Color(0xdce0e1);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.rotation.order = 'YXZ';
-camera.position.set(5, PLAYER_HEIGHT, 0);
-camera.rotation.set(-0.08, -3.24, 0);
+camera.position.set(0, PLAYER_HEIGHT, 20);
+camera.rotation.set(-0.08, -1.6, 0);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -24,7 +24,7 @@ window.addEventListener('resize', e => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-function wall(image, x1, z1, x2, z2, y = 0, height = CLASSROOM_HEIGHT, side = THREE.FrontSide) {
+function makeWall(image, x1, z1, x2, z2, y = 0, height = CLASSROOM_HEIGHT, side = THREE.FrontSide) {
   const geometry = new THREE.BufferGeometry();
   geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array([
     x1, y, z1,
@@ -59,7 +59,7 @@ function finishRectOff(geometry, image, width, height, side) {
       width / textureWidth, height / textureHeight,
       width / textureWidth, 0.0
     ]), 2));
-    return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture(image, repeatX, repeatY), side}));
+    return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture(image, repeatX, repeatY), side, transparent: image._transparent}));
   }
 }
 function flatPath(image, points, y = 0, side = THREE.BackSide) {
@@ -82,10 +82,10 @@ function flatPath(image, points, y = 0, side = THREE.BackSide) {
   }
   geometry.addAttribute('position', attribute);
   if (typeof image === 'number') {
-    return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: image, side}));
+    return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: image, side, opacity: image.opacity, transparent: image.opacity !== 1}));
   } else {
     geometry.addAttribute('uv', new THREE.BufferAttribute(uv, 2));
-    return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture(image, repeatX, repeatY), side}));
+    return new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map: texture(image, repeatX, repeatY), side, transparent: image._transparent}));
   }
 }
 
@@ -113,10 +113,11 @@ function colour(colour, opacity = 1) {
     isColour: true
   };
 }
-function image(url) {
+function image(url, transparent = false) {
   let image;
   loadingPromises.push(new Promise(res => {
     image = loader.load(url, res);
+    image._transparent = transparent;
   }));
   return image;
 }
